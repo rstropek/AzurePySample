@@ -18,11 +18,11 @@ tracer = trace.get_tracer(__name__)
 
 from azure.identity import DefaultAzureCredential, get_bearer_token_provider
 token_provider = get_bearer_token_provider(
-    DefaultAzureCredential(), "https://cognitiveservices.azure.com/.default"
+    DefaultAzureCredential(exclude_managed_identity_credential=(os.getenv("EXCLUDE_MANAGED_IDENTITY") == "true")), "https://cognitiveservices.azure.com/.default"
 )
 
 # Import database module
-from db import execute_query
+from db import create_managed_identity_user, execute_query
 
 from openai import AzureOpenAI
 
@@ -51,6 +51,15 @@ async def test_db_connection():
         logger.error(f"Database error: {e}")
         raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
 
+
+@app.get("/db/create")
+async def create_managed_identity_user_handler(identity: str = "testuser"):
+    try:
+        result = await create_managed_identity_user(identity)
+        return {"status": "success", "data": result}
+    except Exception as e:
+        logger.error(f"Database error: {e}")
+        raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
 
 @app.get("/openai")
 async def openai_test():

@@ -57,7 +57,7 @@ resource webApp 'Microsoft.Web/sites@2024-04-01' = {
     siteConfig: {
       linuxFxVersion: 'DOCKER|${registry.name}.azurecr.io/fastapi:latest'
       acrUseManagedIdentityCreds: true
-      acrUserManagedIdentityID: identity.id
+      acrUserManagedIdentityID: identity.properties.clientId
       alwaysOn: true
       cors: {
         allowedOrigins: ['*']
@@ -73,11 +73,13 @@ resource webApp 'Microsoft.Web/sites@2024-04-01' = {
       DOCKER_ENABLE_CI: 'true'
       APPINSIGHTS_INSTRUMENTATIONKEY: appInsights.properties.ConnectionString
       PGHOST: postgresServer.properties.fullyQualifiedDomainName
-      PGUSER: 'db'
+      PGUSER: identity.name
       PGPORT: '5432'
       PGDATABASE: 'demodatabase'
       AZURE_OPENAI_ENDPOINT: account.properties.endpoint
       MODEL_NAME: 'gpt-4o'
+      AZURE_CLIENT_ID: identity.properties.clientId
+      EXCLUDE_MANAGED_IDENTITY: 'false'
     }
   }
 }
@@ -93,7 +95,7 @@ resource hook 'Microsoft.ContainerRegistry/registries/webhooks@2020-11-01-previe
   location: location
   name: 'webhook' 
   properties: {
-    serviceUri: '${creds}/docker/hook'
+    serviceUri: '${creds}/api/registry/webhook'
     status: 'enabled'
   
     actions: [

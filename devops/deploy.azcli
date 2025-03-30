@@ -7,7 +7,7 @@
 LOCATION=swedencentral
 
 # Name of the project. All resource names will be derived from that name
-PROJECT_NAME=uzh-training-prep
+PROJECT_NAME=uzh-training-prep-2
 
 # Admin principal ID (user)
 ADMIN_PRINCIPAL_ID=81686fe2-9ab8-4640-862c-af20fca5b6ed
@@ -26,19 +26,30 @@ SUBSCRIPTION=$(echo $RGNAMES | jq -r .subscriptionId.value)
 echo "Resource group: $RG"
 echo "Subscription ID: $SUBSCRIPTION"
 
-# Deploy Azure Container Registry
+# Deploy Central Infrastructure
 DEPLOY_RESULT=$(az deployment group create \
     --resource-group $RG \
     --name Deployment-$(date +"%Y-%m-%dT%H-%M-%S") \
-    --template-file main.bicep \
+    --template-file central-infrastructure.bicep \
     --parameters \
         projectName=$PROJECT_NAME \
-        location=$LOCATION \
-        principalIds="[\"$ADMIN_PRINCIPAL_ID\"]" \
+        tags="{\"Project\":\"$PROJECT_NAME\"}" \
+        adminPrincipalId=$ADMIN_PRINCIPAL_ID \
     | jq .properties.outputs)
-ACR_NAME=$(echo $DEPLOY_RESULT | jq -r .acrName.value)
+ACR_NAME=$(echo $DEPLOY_RESULT | jq -r .registryName.value)
 echo "ACR name: $ACR_NAME"
 
-# Build and push image to ACR
-cd ../src
+# Now you can build and push image to ACR
+# Execute the following statement in the src folder
 az acr build --image fastapi --registry $ACR_NAME .
+
+# Deploy Project Infrastructure
+DEPLOY_RESULT=$(az deployment group create \
+    --resource-group $RG \
+    --name Deployment-$(date +"%Y-%m-%dT%H-%M-%S") \
+    --template-file project-infrastructure.bicep \
+    --parameters \
+        projectName=$PROJECT_NAME \
+        tags="{\"Project\":\"$PROJECT_NAME\"}" \
+        adminPrincipalId=$ADMIN_PRINCIPAL_ID \
+    | jq .properties.outputs)

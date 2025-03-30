@@ -1,15 +1,9 @@
 param location string = resourceGroup().location
-
 param projectName string
-
 param tags object
-
 param sku string = 'S0'
-
-param principalIds array
-
+param adminPrincipalId string
 param modelName string = 'gpt-4o'
-
 param modelVersion string = '2024-11-20'
 
 var abbrs = loadJsonContent('abbreviations.json')
@@ -34,14 +28,14 @@ resource account 'Microsoft.CognitiveServices/accounts@2024-10-01' = {
   }
 }
 
-resource roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [for p in principalIds: {
-  name: guid(p, account.id)
+resource roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid(adminPrincipalId, account.id)
   scope: account
   properties: {
-    principalId: p
+    principalId: adminPrincipalId
     roleDefinitionId: resourceId('Microsoft.Authorization/roleDefinitions', roles.CognitiveServicesUser)
   }
-}]
+}
 
 resource identity 'Microsoft.ManagedIdentity/userAssignedIdentities@2022-01-31-preview' existing = {
   name: '${abbrs.managedIdentityUserAssignedIdentities}cr-${uniqueString(projectName)}'

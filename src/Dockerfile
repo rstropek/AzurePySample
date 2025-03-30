@@ -8,6 +8,7 @@ RUN pip install pipenv && \
     pipenv install --deploy --system && \
     pip uninstall -y pipenv
 
+COPY .env .env
 COPY src/ ./src/
 
 EXPOSE 8080
