@@ -1,0 +1,19 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+fastapi = {extras = ["standard"], version = "*"}
+azure-monitor-opentelemetry = "*"
+python-dotenv = "*"
+opentelemetry-instrumentation-fastapi = "*"
+"azure.identity" = "*"
+asyncpg = "*"
+asyncpg-stubs = "*"
+openai = "*"
+
+[dev-packages]
+
+[requires]
+python_version = "3.12"
