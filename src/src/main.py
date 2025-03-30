@@ -1,6 +1,6 @@
 import os
 
-from typing import Union, List, Dict, Any
+from typing import Union
 import asyncio
 
 from fastapi import FastAPI, HTTPException
@@ -63,7 +63,8 @@ async def openai_test():
 
         response = client.responses.create(
             model=os.getenv("MODEL_NAME"), 
-            input="Are dolphin fish?"
+            input="Are dolphin fish?",
+            max_output_tokens=4096 # Note that this currently is required for new responses API (preview)
         )
 
         return {"status": "success", "data": response.output_text}

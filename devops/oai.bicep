@@ -8,9 +8,9 @@ param sku string = 'S0'
 
 param principalIds array
 
-param modelName string = 'gpt-4o-mini'
+param modelName string = 'gpt-4o'
 
-param modelVersion string = '2024-07-18'
+param modelVersion string = '2024-11-20'
 
 var abbrs = loadJsonContent('abbreviations.json')
 var roles = loadJsonContent('azure-roles.json')
@@ -59,11 +59,11 @@ resource roleAssignmentsManagedIdentity 'Microsoft.Authorization/roleAssignments
 
 // Add a model deployment.
 resource deployment 'Microsoft.CognitiveServices/accounts/deployments@2023-05-01' = {
-  name: 'gpt-4o-mini'
+  name: 'gpt-4o'
   parent: account
   sku: {
     capacity: 10 // capacity in thousands of TPM
-    name: 'Standard'
+    name: 'GlobalStandard'
   }
   properties: {
     model: {

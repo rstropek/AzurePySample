@@ -10,6 +10,7 @@
     * [ACR Authentication](https://learn.microsoft.com/en-us/azure/container-registry/container-registry-authentication)
     * [Using Azure Container Registry webhooks](https://learn.microsoft.com/en-us/azure/container-registry/container-registry-webhook)
     * [OpenAI Responses API (preview)](https://learn.microsoft.com/en-us/azure/ai-services/openai/how-to/responses?tabs=python-secure)
+    * [Environment variables and app settings in Azure App Service](https://learn.microsoft.com/en-us/azure/app-service/reference-app-settings)
 
 * Python:
     * [FastAPI](https://fastapi.tiangolo.com/)

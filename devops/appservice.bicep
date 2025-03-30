@@ -55,7 +55,9 @@ resource webApp 'Microsoft.Web/sites@2024-04-01' = {
     publicNetworkAccess: 'Enabled'
     serverFarmId: appServicePlan.id
     siteConfig: {
-      linuxFxVersion: '${registry.name}.azurecr.io/fastapi:latest'
+      linuxFxVersion: 'DOCKER|${registry.name}.azurecr.io/fastapi:latest'
+      acrUseManagedIdentityCreds: true
+      acrUserManagedIdentityID: identity.id
       alwaysOn: true
       cors: {
         allowedOrigins: ['*']
@@ -68,13 +70,14 @@ resource webApp 'Microsoft.Web/sites@2024-04-01' = {
   resource settings 'config@2024-04-01' = {
     name: 'appsettings'
     properties: {
+      DOCKER_ENABLE_CI: 'true'
       APPINSIGHTS_INSTRUMENTATIONKEY: appInsights.properties.ConnectionString
       PGHOST: postgresServer.properties.fullyQualifiedDomainName
       PGUSER: 'db'
       PGPORT: '5432'
       PGDATABASE: 'demodatabase'
       AZURE_OPENAI_ENDPOINT: account.properties.endpoint
-      MODEL_NAME: 'oai-gpt-4'
+      MODEL_NAME: 'gpt-4o'
     }
   }
 }
