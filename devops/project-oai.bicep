@@ -51,7 +51,7 @@ resource roleAssignmentsManagedIdentity 'Microsoft.Authorization/roleAssignments
   }
 }
 
-// Add a model deployment.
+// Add model deployments.
 resource deployment 'Microsoft.CognitiveServices/accounts/deployments@2023-05-01' = {
   name: 'gpt-4o'
   parent: account
@@ -63,6 +63,23 @@ resource deployment 'Microsoft.CognitiveServices/accounts/deployments@2023-05-01
     model: {
       name: modelName
       version: modelVersion
+      format: 'OpenAI'
+    }
+    raiPolicyName: 'DefaultV2'
+  }
+}
+
+resource embeddingsDeployment 'Microsoft.CognitiveServices/accounts/deployments@2023-05-01' = {
+  name: 'text-embedding-3-large'
+  parent: account
+  sku: {
+    capacity: 25 // capacity in thousands of TPM
+    name: 'GlobalStandard'
+  }
+  properties: {
+    model: {
+      name: 'text-embedding-3-large'
+      version: '1'
       format: 'OpenAI'
     }
     raiPolicyName: 'DefaultV2'

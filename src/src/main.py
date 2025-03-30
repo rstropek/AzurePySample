@@ -22,7 +22,7 @@ token_provider = get_bearer_token_provider(
 )
 
 # Import database module
-from db import create_managed_identity_user, execute_query
+from db import create_and_fill_vector_table, create_managed_identity_user, create_vector, execute_query, vector_search
 
 from openai import AzureOpenAI
 
@@ -81,4 +81,31 @@ async def openai_test():
         logger.error(f"OpenAI error: {e}")
         return str(e)
 
+@app.get("/embeddings")
+async def create_and_fill_vector_table_handler():
+    try:
+        result = await create_and_fill_vector_table()
+        return {"status": "success", "data": result}
+    except Exception as e:
+        logger.error(f"Error: {e}")
+        raise HTTPException(status_code=500, detail=f"Error: {str(e)}")
+
+@app.get("/vector")
+async def create_vector_handler():
+    try:
+        result = await create_vector()
+        return {"status": "success", "data": result}
+    except Exception as e:
+        logger.error(f"Error: {e}")
+        raise HTTPException(status_code=500, detail=f"Error: {str(e)}")
+    
+@app.get("/vector/search")
+async def vector_search_handler(query: str):
+    try:
+        result = await vector_search(query)
+        return {"status": "success", "data": result}
+    except Exception as e:
+        logger.error(f"Error: {e}")
+        raise HTTPException(status_code=500, detail=f"Error: {str(e)}")
+    
 FastAPIInstrumentor.instrument_app(app)
