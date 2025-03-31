@@ -1,0 +1,6 @@
+```md
+GRANT CONNECT ON DATABASE demodatabase TO id-cr-ulix73f47kgqg;
+\c demodatabase
+GRANT USAGE ON SCHEMA public TO "id-cr-ulix73f47kgqg";
+ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT, INSERT, UPDATE, DELETE ON TABLES TO "id-cr-ulix73f47kgqg";
+GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO "id-cr-ulix73f47kgqg";
